@@ -100,7 +100,7 @@ def groupContoursOfInterest(hw, contours):
             if isMatch(rect1, rect2):
                 group.append(cnt2)
                 
-        if len(group) > 6 and len(group) < 9:
+        if len(group) > 2 and len(group) < 9:
             # add the group to the groups
             groups.append(group)
         
@@ -131,8 +131,14 @@ def groupContoursOfInterest(hw, contours):
         cv2.namedWindow('min bounding', cv2.WINDOW_NORMAL)
         cv2.imshow('min bounding', img_temp)
         cv2.imwrite('/home/pi/Pictures/min_bounding.jpg', img_temp)
-        
-    return groups
+
+    if(len(groups) == 0):
+        return None
+
+    # return the largest group
+    groups.sort(key = len, reverse = True)
+    return groups[0]
+    
 
 
 # Checks the contours bounding rectangles to see if they match

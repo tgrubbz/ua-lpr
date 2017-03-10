@@ -8,6 +8,7 @@ import imageProcessing
 import characterDetector
 import cv2
 import numpy as np
+import classifier as cs
 
 # define the main function
 def main():
@@ -15,6 +16,8 @@ def main():
     print('Starting LPR...')
     print('Debug mode ' + ('[ON]' if debug else '[OFF]'))
     
+    # try to train
+    cs.train()
     
     # open scene image
     img_scene = cv2.imread('/home/pi/Pictures/plate8.jpg')
@@ -30,12 +33,18 @@ def main():
 
     # get the threshold image
     img_thresh = imageProcessing.getImageThreshold(img_scene)
+    src_thresh = img_thresh.copy()
 
     # get the character contours of interest (potential characters)
     contours_interesting = characterDetector.getContoursOfInterest(img_thresh)
 
     # get groups of contours (potential characters)
-    groups = characterDetector.groupContoursOfInterest(img_thresh.shape, contours_interesting)    
+    group = characterDetector.groupContoursOfInterest(img_thresh.shape, contours_interesting)
+    print 'DONE'
+    if(group):
+        print len(group)
+        cs.detectCharacters(src_thresh, group)
+
 
     print 'time elapsed (sec): ' + str(time.time() - start)
     if debug:

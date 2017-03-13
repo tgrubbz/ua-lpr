@@ -9,6 +9,7 @@ import characterDetector
 import cv2
 import numpy as np
 import classifier as cs
+import logger
 
 # define the main function
 def main():
@@ -40,10 +41,11 @@ def main():
 
     # get groups of contours (potential characters)
     group = characterDetector.groupContoursOfInterest(img_thresh.shape, contours_interesting)
-    print 'DONE'
+
+    plate = ''
     if(group):
-        print len(group)
-        cs.detectCharacters(src_thresh, group)
+        plate = cs.detectCharacters(src_thresh, group)
+        logger.logPlateAccess(plate, True)  
 
 
     print 'time elapsed (sec): ' + str(time.time() - start)

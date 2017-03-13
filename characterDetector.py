@@ -33,7 +33,7 @@ def getContoursOfInterest(img_thresh):
             riveting_contours.append(cnt)       
 
     if debug:
-        print('characters of interest count: ' + str(len(riveting_contours)))
+        print('interesting countors count: ' + str(len(riveting_contours)))
         height, width = img_thresh.shape
         img_temp = np.zeros((height, width, 3), np.uint8)
         cv2.drawContours(img_temp, riveting_contours, -1, (255, 255, 255))
@@ -68,10 +68,7 @@ def checkContourForInterest(cnt):
             )
 
 
-def groupContoursOfInterest(hw, contours):
-    if debug:
-        print 'number of interesting contours: ' + str(len(contours))
-        
+def groupContoursOfInterest(hw, contours):        
     groups = []
 
     # return an empty array
@@ -100,7 +97,7 @@ def groupContoursOfInterest(hw, contours):
             if isMatch(rect1, rect2):
                 group.append(cnt2)
                 
-        if len(group) > 2 and len(group) < 9:
+        if len(group) > 2 and len(group) < 8:
             # add the group to the groups
             groups.append(group)
         
@@ -120,11 +117,9 @@ def groupContoursOfInterest(hw, contours):
         
         for i in range(0, len(groups)):
             group = groups[i]
-            print 'group ' + str(i)
             for j in range(0, len(group)):
                 cnt = group[j]
                 rect = correctBoundingRect(cv2.minAreaRect(cnt))
-                print rect
                 box = np.int0(cv2.boxPoints(rect))
                 cv2.drawContours(img_temp, [box], 0, (255, 0, 0))
             

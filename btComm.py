@@ -10,11 +10,11 @@ for addr, name in nearby_devices:
     if name == 'DT18Leo':
         sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
         sock.connect((addr, 1))
-##        print 'sending info...'
-##        sock.send('some info')
-##        print 'info sent...'
-##        sock.close()
-##        print 'socket closed...'
+        print 'sending info...'
+        sock.send('some info')
+        print 'info sent...'
+        sock.close()
+        print 'socket closed...'
 
 
 

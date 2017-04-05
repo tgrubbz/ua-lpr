@@ -2,8 +2,10 @@ import socket
 import json
 from datetime import datetime
 
-HOST = '192.168.137.63'
-PORT = 50007
+#HOST = '192.168.137.63'
+HOST = '192.168.43.160'
+PORT = 8000
+#PORT = 50007
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def openConnection():

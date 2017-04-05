@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 
 # module variables
+# single contour limits
 cntMinArea = 45
 cntMinWidth = 3
 cntMinHeight = 15
@@ -17,6 +18,7 @@ cntMaxRatio = 0.43
 cntMinAngle = -15.0
 cntMaxAngle = 0
 
+# group contor limits
 cntsMaxDiagonalMultiple = 10.0
 cntsMaxAngleDiff = 10.0
 cntsMaxAreaDiff = 0.25
@@ -34,16 +36,17 @@ def getContoursOfInterest(img_thresh):
 
     if debug:
         print('interesting countors count: ' + str(len(riveting_contours)))
-        height, width = img_thresh.shape
-        img_temp = np.zeros((height, width, 3), np.uint8)
-        cv2.drawContours(img_temp, riveting_contours, -1, (255, 255, 255))
-        cv2.namedWindow('contours of interest', cv2.WINDOW_NORMAL)
-        cv2.imshow('contours of interest', img_temp)
+        height, width = img_thresh.shape       
         
         img_temp = np.zeros((height, width, 3), np.uint8)
         cv2.drawContours(img_temp, contours, -1, (255, 255, 255))
         cv2.namedWindow('contours', cv2.WINDOW_NORMAL)
         cv2.imshow('contours', img_temp)
+        
+        img_temp = np.zeros((height, width, 3), np.uint8) 
+        cv2.drawContours(img_temp, riveting_contours, -1, (255, 255, 255))
+        cv2.namedWindow('contours of interest', cv2.WINDOW_NORMAL)
+        cv2.imshow('contours of interest', img_temp)
     
     return riveting_contours
 
@@ -100,13 +103,18 @@ def groupContoursOfInterest(hw, contours):
         if len(group) > 2 and len(group) < 8:
             # add the group to the groups
             groups.append(group)
-        
+
+    if(len(groups) == 0):
+        return None
+
+    # return the largest group
+    groups.sort(key = len, reverse = True)        
     
     if debug:
         print 'number of groups: ' + str(len(groups))
         img_temp = np.zeros((hw[0], hw[1], 3), np.uint8)
         
-        for i in range(0, len(groups)):
+        for i in range(0, 1):
             rgbVal1 = 100 if random.uniform(0, 1) < 0.5 else 255
             rgbVal2 = 100 if random.uniform(0, 1) < 0.5 else 255
             rgbVal3 = 100 if random.uniform(0, 1) < 0.5 else 255
@@ -115,7 +123,7 @@ def groupContoursOfInterest(hw, contours):
         cv2.namedWindow('groups', cv2.WINDOW_NORMAL)
         cv2.imshow('groups', img_temp)      
         
-        for i in range(0, len(groups)):
+        for i in range(0, 1):
             group = groups[i]
             for j in range(0, len(group)):
                 cnt = group[j]
@@ -126,12 +134,6 @@ def groupContoursOfInterest(hw, contours):
         cv2.namedWindow('min bounding', cv2.WINDOW_NORMAL)
         cv2.imshow('min bounding', img_temp)
         cv2.imwrite('/home/pi/Pictures/min_bounding.jpg', img_temp)
-
-    if(len(groups) == 0):
-        return None
-
-    # return the largest group
-    groups.sort(key = len, reverse = True)
     return groups[0]
     
 

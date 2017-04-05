@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
-import characterDetector as cd
+import imp
+
+cd = imp.load_source('characterDetector', '/home/pi/Programs/ua-lpr/lpr/characterDetector.py')
 
 kn = cv2.ml.KNearest_create()
 

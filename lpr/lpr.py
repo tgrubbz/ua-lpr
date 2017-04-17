@@ -8,10 +8,11 @@ import numpy as np
 import threading
 import imp
 import picamera
+from contour import *
+import datetime
 
 # Initailize the camera object
 camera = picamera.PiCamera()
-
 
 # Load sub directories
 cs = imp.load_source('classifier', '/home/pi/Programs/ua-lpr/lpr/classifier.py')
@@ -21,6 +22,8 @@ bt = imp.load_source('btComm', '/home/pi/Programs/ua-lpr/bt/btComm.py')
 logger = imp.load_source('logger', '/home/pi/Programs/ua-lpr/sockets/logger.py')
 db = imp.load_source('repo', '/home/pi/Programs/ua-lpr/dal/repo.py')
 
+# Bluetooth sent command list
+btCmds = dict()
 
 # Thread for logging information to the server
 class loggingThread(threading.Thread):
@@ -49,7 +52,7 @@ class bluetoothThread(threading.Thread):
 
 # Process the image at the given path
 # Returns a string if the found plate or None
-def process(path):
+def process(path, singleExec):
     
     # open scene image
     img_scene_og = cv2.imread(path)
@@ -76,16 +79,16 @@ def process(path):
     # get groups of contours (potential characters)
     group = characterDetector.groupContoursOfInterest(img_thresh.shape, contours_interesting)
 
+    plate = None
     if(group):
-        # get the detected string 
+        # get the detected string        
         plate = cs.detectCharacters(src_thresh, group)
-        return plate
 
     if debug:
         # wait until keypress
         cv2.waitKey(0)
 
-    return None
+    return plate
         
 
 # Starts the processing loop
@@ -98,22 +101,46 @@ def start():
 
     # Start loop
     while(True):
-        start = time.time()
-        
-        # Capture
+        start = time.time()        
+
         camera.capture('scene.jpg')
-        print 'pic taken'
 
         # Process
-        plate = process('scene.jpg')
+        plate = process('scene.jpg', False)
         print 'plate processed: ', plate
     
         if(plate):
-            print 'found plate'
-            #logThread = loggingThread(plate, access)
-            #logThread.start()
-        
-            #btThread = bluetoothThread(plate, access)
-            #btThread.start()
+            access = db.readAccess(plate)
+            
+##            logThread = loggingThread(plate, access)
+##            logThread.start()
+
+            # Remove old plates from btCmds
+            now = datetime.datetime.now()
+            for p in btCmds.keys():
+                t = btCmds[p]
+                if t < (now - datetime.timedelta(seconds = 30)):
+                    del btCmds[p]
+
+            # If the plate is not in the commands list
+            # Then add it and send the command
+            if(plate not in btCmds):
+                btCmds[plate] = now            
+##                btThread = bluetoothThread(access)
+##                btThread.start()
+                
         print 'time elapsed (sec): ' + str(time.time() - start)
+
+def main():
+    # train the classifier
+    cs.train()
+    
+    # Initailize the camera object    
+    camera = picamera.PiCamera()    
+    camera.capture('scene.jpg')    
+    plate = process('scene.jpg', True)
+    camera.close()
+
+
+    
     

@@ -16,7 +16,11 @@ cropY = 0
 cropW = 2400
 cropH = 3200
 
-gaussianKernel = (11,11)
+##gaussianKernel = (11,11)
+##adaptiveThreshBlockSize = 19
+##adaptiveThreshWeight = 9
+
+gaussianKernel = (3,3)
 adaptiveThreshBlockSize = 19
 adaptiveThreshWeight = 9
 
@@ -37,7 +41,7 @@ def getImageThreshold(img_scene):
     img_gry = cv2.cvtColor(img_scene, cv2.COLOR_BGR2GRAY)
     img_improved_contrast = cv2.equalizeHist(img_gry)
     img_blurred = cv2.GaussianBlur(img_improved_contrast, gaussianKernel, 0)
-    img_thresh = cv2.adaptiveThreshold(img_blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, adaptiveThreshBlockSize, adaptiveThreshWeight)    
+    img_thresh = cv2.adaptiveThreshold(img_blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, adaptiveThreshBlockSize, adaptiveThreshWeight)
     
     if debug:
         cv2.namedWindow('img_gry', cv2.WINDOW_NORMAL)

@@ -29,10 +29,10 @@ class listeningThread(threading.Thread):
 
 def main():
     thread1 = processingThread()
-    #thread2 = listeningThread()
+    thread2 = listeningThread()
 
     thread1.start()
-    #thread2.start()
+    thread2.start()
     
 
 main()

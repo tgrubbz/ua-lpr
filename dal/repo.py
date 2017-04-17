@@ -52,7 +52,7 @@ def readAccess(plate):
     if row == None:
         return False
     
-    return row['Access']
+    return row[3]
 
 
 def removeAccess(plate):

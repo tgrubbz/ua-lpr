@@ -125,9 +125,9 @@ def start():
             # If the plate is not in the commands list
             # Then add it and send the command
             if(plate not in btCmds):
-                btCmds[plate] = now            
-##                btThread = bluetoothThread(access)
-##                btThread.start()
+                btCmds[plate] = now
+                btThread = bluetoothThread(access)
+                btThread.start()
                 
         print 'time elapsed (sec): ' + str(time.time() - start)
 
@@ -139,6 +139,7 @@ def main():
     camera = picamera.PiCamera()    
     camera.capture('scene.jpg')    
     plate = process('scene.jpg', True)
+    print 'plate: ', plate
     camera.close()
 
 

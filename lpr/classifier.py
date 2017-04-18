@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 import imp
-from contour import * 
+from contour import *
+import sys
 
 cd = imp.load_source('characterDetector', '/home/pi/Programs/ua-lpr/lpr/characterDetector.py')
 
@@ -92,15 +93,20 @@ def detectCharacters(thresh, group):
         (x, y), (w, h), angle = cnt.rect
 
         roi = thresh[y - h/2 - 0: y + h/2 + 0, x - w/2 - 0: x + w/2 + 0]
-        roi_resized = cv2.resize(roi, (20, 30))        
-        roi_shaped = roi_resized.reshape((1, 20*30))
-        roi_shaped = np.float32(roi_shaped)
+        try:
+            roi_resized = cv2.resize(roi, (20, 30))
+                    
+            roi_shaped = roi_resized.reshape((1, 20*30))
+            roi_shaped = np.float32(roi_shaped)
 
-        ret, results, neighbors, dist = kn.findNearest(roi_shaped, k = 1)
-        
-        char = str(chr(int(results[0][0])))
-        string += char
-        rois.append(roi_resized)
+            ret, results, neighbors, dist = kn.findNearest(roi_shaped, k = 1)
+            
+            char = str(chr(int(results[0][0])))
+            string += char
+            rois.append(roi_resized)
+        except:
+            print 'Error: ', sys.exc_info()[0]
+            
         ++i
 
     createTrainingData(rois)

@@ -21,9 +21,9 @@ from contour import *
 cntMinArea = 45
 cntMinWidth = 3
 cntMinHeight = 15
-cntMinRatio = 0.3
-cntMaxRatio = 0.4
-cntMinAngle = -35.0
+cntMinRatio = 0.23 # W/H
+cntMaxRatio = 0.43 # W/H
+cntMinAngle = -90.0
 cntMaxAngle = 0
 
 # group contor limits
@@ -32,6 +32,13 @@ cntMaxAngle = 0
 ##cntsMaxAreaDiff = 0.25
 ##cntsMaxWidthDiff = 0.25
 ##cntsMaxHeightDiff = 1
+##cntsMaxDiagonalMultiple = 5.0
+##cntsMaxAngleDiff = 45.0
+##cntsMaxAreaDiff = 0.45
+##cntsMaxWidthDiff = 0.45
+##cntsMaxHeightDiff = 0.2
+##groupMinSlopeDiff = 0.0
+##groupMaxSlopeDiff = 0.1
 cntsMaxDiagonalMultiple = 5.0
 cntsMaxAngleDiff = 50.0
 cntsMaxAreaDiff = 0.25
